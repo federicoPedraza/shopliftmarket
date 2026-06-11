@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-paper: #f5efe3;
+  --color-ink: #211d18;
+  --color-accent: #d8431f;
+  --color-cream: #fffaf0;
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-karla);
+  --font-mono: var(--font-plex-mono);
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  /* Faint paper grain */
+  background-image: radial-gradient(
+    rgba(33, 29, 24, 0.055) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-rise {
+  animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+  .card-rise {
+    animation: none;
+  }
+}
