@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Fraunces, Karla, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import ConvexClientProvider from "@/components/ConvexClientProvider";
+import DatabaseProvider from "@/components/DatabaseProvider";
+import VersionBadge from "@/components/VersionBadge";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -38,7 +39,8 @@ export default function RootLayout({
       <body
         className={`${fraunces.variable} ${karla.variable} ${plexMono.variable} antialiased`}
       >
-        <ConvexClientProvider>{children}</ConvexClientProvider>
+        <DatabaseProvider>{children}</DatabaseProvider>
+        <VersionBadge />
       </body>
     </html>
   );

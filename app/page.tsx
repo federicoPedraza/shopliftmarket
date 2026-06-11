@@ -1,6 +1,9 @@
 "use client";
 
-import { useMutation, useQuery } from "convex/react";
+import {
+  useDatabase,
+  useDatabaseQuery,
+} from "@/components/DatabaseProvider";
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import { FormEvent, useState } from "react";
@@ -29,7 +32,7 @@ function formatPrice(cents: number) {
 }
 
 export default function Home() {
-  const items = useQuery(api.catalog.list, { filter: {} });
+  const items = useDatabaseQuery(api.catalog.list, { filter: {} });
 
   return (
     <main className="min-h-screen">
@@ -90,7 +93,7 @@ function Header({ count }: { count: number | undefined }) {
 }
 
 function AddItemForm() {
-  const addItem = useMutation(api.catalog.add);
+  const db = useDatabase();
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
@@ -112,7 +115,7 @@ function AddItemForm() {
     }
     setSaving(true);
     try {
-      await addItem({
+      await db.runMutation(api.catalog.add, {
         name,
         description,
         priceCents,
@@ -258,13 +261,13 @@ function Shelf({ items }: { items: Doc<"items">[] | undefined }) {
 }
 
 function ItemCard({ item, index }: { item: Doc<"items">; index: number }) {
-  const removeItem = useMutation(api.catalog.remove);
+  const db = useDatabase();
   const [removing, setRemoving] = useState(false);
 
   async function handleRemove(id: Id<"items">) {
     setRemoving(true);
     try {
-      await removeItem({ id });
+      await db.runMutation(api.catalog.remove, { id });
     } catch {
       setRemoving(false);
     }
