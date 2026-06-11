@@ -2,9 +2,16 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
 export const list = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query("items").order("desc").take(100);
+  args: { search: v.string() },
+  handler: async (ctx, args) => {
+    const search = args.search.trim();
+    if (search === "") {
+      return await ctx.db.query("items").order("desc").take(100);
+    }
+    return await ctx.db
+      .query("items")
+      .withSearchIndex("search_name", (q) => q.search("name", search))
+      .take(100);
   },
 });
 

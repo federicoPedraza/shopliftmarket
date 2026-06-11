@@ -43,6 +43,15 @@ Delete the `convex/deprecated/` file and set the entry's `replacement` to
 `null` in the same commit. **Keep the null entry permanently** — it is the
 tombstone that shows ancient tabs a refresh prompt instead of a crash.
 
+## Local development
+
+`next dev` reports app version 0, which the router treats as "current" —
+dev always calls canonical functions, because a dirty working tree has the
+newest call sites but the *parent commit's* count, which would otherwise
+mis-route new calls to old validators. To simulate a stale client, run
+`APP_VERSION_OVERRIDE=<version> bun run dev` (and temporarily revert the
+call sites to that version's shape).
+
 ## Invariants
 
 - Never change `versions:manifest`'s name, args, or entry shape; only add

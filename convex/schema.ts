@@ -8,5 +8,7 @@ export default defineSchema({
     // Price in cents to avoid floating point issues
     priceCents: v.number(),
     emoji: v.string(),
+  }).searchIndex("search_name", {
+    searchField: "name",
   }),
 });

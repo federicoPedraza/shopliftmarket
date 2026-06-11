@@ -17,8 +17,15 @@ function git(command: string): string | null {
 // Vercel — shallow clones undercount).
 // APP_VERSION_OVERRIDE exists to simulate a stale client locally
 // (e.g. APP_VERSION_OVERRIDE=1 bun run dev) — never set it on Vercel.
+//
+// `next dev` always runs the newest call sites regardless of what is
+// committed, so it must always route to canonical functions: report
+// version 0, which the router treats as "current". The commit count only
+// describes builds made from committed code.
+const isDev = process.env.NODE_ENV !== "production";
 const version =
-  process.env.APP_VERSION_OVERRIDE ?? git("git rev-list --count HEAD") ?? "0";
+  process.env.APP_VERSION_OVERRIDE ??
+  (isDev ? "0" : (git("git rev-list --count HEAD") ?? "0"));
 
 const commit =
   process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ??

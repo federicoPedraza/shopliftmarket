@@ -6,7 +6,7 @@ import {
 } from "@/components/DatabaseProvider";
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 const QUICK_EMOJI = ["🍎", "🧀", "🥖", "🫙", "🧦", "🕯️", "📻", "🪴", "🧼", "🎁"];
 
@@ -32,16 +32,24 @@ function formatPrice(cents: number) {
 }
 
 export default function Home() {
-  const items = useDatabaseQuery(api.catalog.list);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 200);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const items = useDatabaseQuery(api.catalog.list, { search: debouncedSearch });
 
   return (
     <main className="min-h-screen">
       <Ticker />
-      <div className="mx-auto max-w-6xl px-5 pb-24">
-        <Header count={items?.length} />
+      <div className="mx-auto max-w-6xl px-5 pb-12">
+        <Header count={items?.length} search={search} onSearchChange={setSearch} />
         <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-[340px_1fr]">
           <AddItemForm />
-          <Shelf items={items} />
+          <Shelf items={items} search={debouncedSearch} />
         </div>
       </div>
     </main>
@@ -68,7 +76,15 @@ function Ticker() {
   );
 }
 
-function Header({ count }: { count: number | undefined }) {
+function Header({
+  count,
+  search,
+  onSearchChange,
+}: {
+  count: number | undefined;
+  search: string;
+  onSearchChange: (value: string) => void;
+}) {
   return (
     <header className="flex flex-wrap items-end justify-between gap-6 border-b-2 border-ink pt-12 pb-8">
       <div>
@@ -82,11 +98,21 @@ function Header({ count }: { count: number | undefined }) {
           </span>
         </p>
       </div>
-      <div className="border-2 border-ink bg-cream px-4 py-3 font-mono text-sm shadow-[5px_5px_0_0_var(--color-ink)]">
-        <span className="text-accent font-semibold">
-          {count === undefined ? "—" : count}
-        </span>{" "}
-        item{count === 1 ? "" : "s"} on the shelf
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="border-2 border-ink bg-cream px-4 py-3 font-mono text-sm shadow-[5px_5px_0_0_var(--color-ink)]">
+          <span className="text-accent font-semibold">
+            {count === undefined ? "—" : count}
+          </span>{" "}
+          item{count === 1 ? "" : "s"} on the shelf
+        </div>
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="Search the shelf…"
+          aria-label="Search items by name"
+          className="w-48 border-2 border-ink bg-cream px-4 py-3 font-mono text-sm shadow-[5px_5px_0_0_var(--color-ink)] outline-none placeholder:text-ink/40 focus:shadow-[5px_5px_0_0_var(--color-accent)] sm:w-60"
+        />
       </div>
     </header>
   );
@@ -225,7 +251,13 @@ function AddItemForm() {
   );
 }
 
-function Shelf({ items }: { items: Doc<"items">[] | undefined }) {
+function Shelf({
+  items,
+  search,
+}: {
+  items: Doc<"items">[] | undefined;
+  search: string;
+}) {
   if (items === undefined) {
     return (
       <section className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -240,6 +272,18 @@ function Shelf({ items }: { items: Doc<"items">[] | undefined }) {
   }
 
   if (items.length === 0) {
+    if (search.trim() !== "") {
+      return (
+        <section className="flex min-h-64 flex-col items-center justify-center border-2 border-dashed border-ink/40 p-10 text-center">
+          <p className="font-display text-4xl font-bold">
+            Nothing matches &ldquo;{search.trim()}&rdquo;.
+          </p>
+          <p className="text-ink/60 mt-2 max-w-sm">
+            Try a different name, or stock it yourself with the form.
+          </p>
+        </section>
+      );
+    }
     return (
       <section className="flex min-h-64 flex-col items-center justify-center border-2 border-dashed border-ink/40 p-10 text-center">
         <p className="font-display text-4xl font-bold">The shelves are bare.</p>
