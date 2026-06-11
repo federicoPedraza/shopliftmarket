@@ -2,7 +2,10 @@ import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 
 export const list = query({
-  args: {},
+  args: {
+    // Required but not yet used — filtering is not implemented
+    filter: v.record(v.string(), v.any()),
+  },
   handler: async (ctx) => {
     return await ctx.db.query("items").order("desc").take(100);
   },

@@ -29,7 +29,7 @@ function formatPrice(cents: number) {
 }
 
 export default function Home() {
-  const items = useQuery(api.catalog.list);
+  const items = useQuery(api.catalog.list, { filter: {} });
 
   return (
     <main className="min-h-screen">
