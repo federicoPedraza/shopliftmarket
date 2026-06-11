@@ -32,7 +32,7 @@ function formatPrice(cents: number) {
 }
 
 export default function Home() {
-  const items = useDatabaseQuery(api.catalog.list, { filter: {} });
+  const items = useDatabaseQuery(api.catalog.list);
 
   return (
     <main className="min-h-screen">

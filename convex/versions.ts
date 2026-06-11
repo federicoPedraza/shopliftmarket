@@ -25,6 +25,13 @@ export const DEPRECATIONS: DeprecationEntry[] = [
     deprecatedAt: "2026-06-11",
     note: "`filter` arg became required",
   },
+  {
+    fn: "catalog:list",
+    lastSupportedVersion: 5,
+    replacement: "deprecated/catalog_list_v5:list",
+    deprecatedAt: "2026-06-11",
+    note: "`filter` arg removed again",
+  },
 ];
 
 /**

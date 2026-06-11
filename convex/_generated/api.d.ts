@@ -10,6 +10,7 @@
 
 import type * as catalog from "../catalog.js";
 import type * as deprecated_catalog_list_v1 from "../deprecated/catalog_list_v1.js";
+import type * as deprecated_catalog_list_v5 from "../deprecated/catalog_list_v5.js";
 import type * as versions from "../versions.js";
 
 import type {
@@ -21,6 +22,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   catalog: typeof catalog;
   "deprecated/catalog_list_v1": typeof deprecated_catalog_list_v1;
+  "deprecated/catalog_list_v5": typeof deprecated_catalog_list_v5;
   versions: typeof versions;
 }>;
 
