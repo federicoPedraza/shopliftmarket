@@ -11,3 +11,8 @@ Convex agent skills for common tasks can be installed by running
 `npx convex ai-files install`.
 
 <!-- convex-ai-end -->
+
+Before changing or deleting any public Convex function's signature, follow the
+deprecation workflow in `convex/deprecated/README.md` — old frontend bundles
+keep calling old signatures, and `DatabaseProvider` routes them to deprecated
+copies based on the client version manifest in `convex/versions.ts`.

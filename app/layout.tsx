@@ -39,8 +39,10 @@ export default function RootLayout({
       <body
         className={`${fraunces.variable} ${karla.variable} ${plexMono.variable} antialiased`}
       >
-        <DatabaseProvider>{children}</DatabaseProvider>
-        <VersionBadge />
+        <DatabaseProvider>
+          {children}
+          <VersionBadge />
+        </DatabaseProvider>
       </body>
     </html>
   );

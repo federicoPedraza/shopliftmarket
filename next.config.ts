@@ -15,7 +15,10 @@ function git(command: string): string | null {
 // lands on main bumps it by one when the deployment rebuilds.
 // Requires full git history at build time (set VERCEL_DEEP_CLONE=true on
 // Vercel — shallow clones undercount).
-const version = git("git rev-list --count HEAD") ?? "0";
+// APP_VERSION_OVERRIDE exists to simulate a stale client locally
+// (e.g. APP_VERSION_OVERRIDE=1 bun run dev) — never set it on Vercel.
+const version =
+  process.env.APP_VERSION_OVERRIDE ?? git("git rev-list --count HEAD") ?? "0";
 
 const commit =
   process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) ??
